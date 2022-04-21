@@ -1,3 +1,5 @@
+package services;
+
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.FileReader;
@@ -7,7 +9,7 @@ public class ArquivoLeitura {
 
     private BufferedReader entrada;
 
-    ArquivoLeitura(String nomeArquivo) {
+    public ArquivoLeitura(String nomeArquivo) {
 
         try {
             entrada = new BufferedReader(new FileReader(nomeArquivo));
