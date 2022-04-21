@@ -1,0 +1,43 @@
+package entities;
+
+public class Pedido implements Comparable{
+
+    private String cliente;
+    private int numProdutos;
+    private int prazo;
+
+    public Pedido(String cliente, int numProdutos, int prazo) {
+        this.cliente = cliente;
+        this.numProdutos = numProdutos;
+        this.prazo = prazo;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public int getNumProdutos() {
+        return numProdutos;
+    }
+
+    public int getPrazo() {
+        return prazo;
+    }
+
+    @Override
+    public String toString() {
+        return cliente + " " +
+                numProdutos + " "
+                + prazo;
+    }
+
+    @Override
+    public int compareTo(Pedido o) {
+        if(this.prazo > o.getPrazo()) {
+            return -1;
+        } else if(this.prazo < o.getPrazo()) {
+            return 1;
+        }
+        return 0;
+    }
+}
