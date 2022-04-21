@@ -1,6 +1,7 @@
 package application;
 
 import entities.EsteiraFCFS;
+import entities.EsteiraPrioridades;
 import entities.Pedido;
 import services.ArquivoLeitura;
 
@@ -13,7 +14,6 @@ public class App {
         Pedido[] pedidos = preencherPedidos();
 
         EsteiraFCFS esteira = new EsteiraFCFS(pedidos);
-
         esteira.ligarEsteira();
 
         System.out.println(relatorio(pedidos, esteira));
@@ -33,7 +33,7 @@ public class App {
             pedidos[i] = new Pedido(dadosPedido[0],
                     Integer.parseInt(dadosPedido[1]),
                     Integer.parseInt(dadosPedido[2]));
-//            System.out.println(pedidos[i].toString());
+
         }
 
         f.fecharArq();
@@ -41,7 +41,9 @@ public class App {
         return pedidos;
     }
 
+
     private static String relatorio(Pedido[] pedidos, EsteiraFCFS esteira){
+
         String string =
                 "\n##### RELATÓRIO #####\n" +
                         "Total de pedidos: " + pedidos.length + "\n" +

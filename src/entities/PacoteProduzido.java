@@ -42,6 +42,7 @@ public class PacoteProduzido implements Comparable <PacoteProduzido>{
 
     @Override
     public int compareTo(PacoteProduzido o) {
+
         if(this.momentoProduzidoSegundos < o.getMomentoProduzidoSegundos()){
             return -1;
         } else if(this.momentoProduzidoSegundos > o.getMomentoProduzidoSegundos()){
