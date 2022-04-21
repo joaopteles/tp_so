@@ -1,6 +1,5 @@
 package entities;
 
-
 public class PacoteProduzido implements Comparable <PacoteProduzido>{
     private int pacoteNumero;
     private double momentoProduzidoSegundos;
@@ -42,7 +41,8 @@ public class PacoteProduzido implements Comparable <PacoteProduzido>{
     }
 
     @Override
-    public int compareTo( PacoteProduzido o) {
+    public int compareTo(PacoteProduzido o) {
+
         if(this.momentoProduzidoSegundos < o.getMomentoProduzidoSegundos()){
             return -1;
         } else if(this.momentoProduzidoSegundos > o.getMomentoProduzidoSegundos()){
