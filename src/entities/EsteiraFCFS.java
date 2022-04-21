@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Esteira {
+public class EsteiraFCFS {
 
     //#region CONSTANTES
     public static final double PACOTE_VOL_MAX = 5000;
@@ -24,7 +24,7 @@ public class Esteira {
     //#endregion
 
     //#region CONSTRUTOR
-    public Esteira(Pedido[] pedidos){
+    public EsteiraFCFS(Pedido[] pedidos){
         this.pedidos = pedidos;
     }
     //#endregion

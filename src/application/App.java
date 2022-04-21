@@ -1,6 +1,6 @@
 package application;
 
-import entities.Esteira;
+import entities.EsteiraFCFS;
 import entities.Pedido;
 import services.ArquivoLeitura;
 
@@ -12,7 +12,7 @@ public class App {
     public static void main(String[] args) {
         Pedido[] pedidos = preencherPedidos();
 
-        Esteira esteira = new Esteira(pedidos);
+        EsteiraFCFS esteira = new EsteiraFCFS(pedidos);
 
         esteira.ligarEsteira();
 
@@ -41,7 +41,7 @@ public class App {
         return pedidos;
     }
 
-    private static String relatorio(Pedido[] pedidos, Esteira esteira){
+    private static String relatorio(Pedido[] pedidos, EsteiraFCFS esteira){
         String string =
                 "\n##### RELATÓRIO #####\n" +
                         "Total de pedidos: " + pedidos.length + "\n" +

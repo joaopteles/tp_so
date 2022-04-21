@@ -1,6 +1,6 @@
 package entities.test;
 
-import entities.Esteira;
+import entities.EsteiraFCFS;
 import entities.Pedido;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,7 @@ class EsteiraTest {
         Pedido[] pedidos = new Pedido[2];
         pedidos[0] = new Pedido("cliente1", 40, 10);
         pedidos[1] = new Pedido("cliente2", 60, 10);
-        Esteira esteira = new Esteira(pedidos);
+        EsteiraFCFS esteira = new EsteiraFCFS(pedidos);
 
         esteira.ligarEsteira();
 
@@ -25,7 +25,7 @@ class EsteiraTest {
         for (int i = 0; i < pedidos2.length; i++) {
             pedidos2[i] = new Pedido("cliente"+1, (i+1)*20, 10);
         }
-        Esteira esteira2 = new Esteira(pedidos2);
+        EsteiraFCFS esteira2 = new EsteiraFCFS(pedidos2);
 
         esteira2.ligarEsteira();
 
@@ -44,7 +44,7 @@ class EsteiraTest {
         pedidos[2] = new Pedido("cliente3", 200, 10);
         pedidos[3] = new Pedido("cliente4", 200, 10);
 
-        Esteira esteira = new Esteira(pedidos);
+        EsteiraFCFS esteira = new EsteiraFCFS(pedidos);
         esteira.ligarEsteira();
 
         assertEquals(10, esteira.pedidosAtendidosAteHorario(8,1));
