@@ -1,6 +1,6 @@
 package application;
 
-import entities.Esteira;
+import entities.EsteiraPrioridades;
 import entities.Pedido;
 import services.ArquivoLeitura;
 
@@ -12,7 +12,7 @@ public class App {
     public static void main(String[] args) {
         Pedido[] pedidos = preencherPedidos();
 
-        Esteira esteira = new Esteira(pedidos);
+        EsteiraPrioridades esteira = new EsteiraPrioridades(pedidos);
 
         esteira.ligarEsteira();
 
@@ -40,7 +40,7 @@ public class App {
         return pedidos;
     }
 
-    private static String relatorio(Pedido[] pedidos, Esteira esteira){
+    private static String relatorio(Pedido[] pedidos, EsteiraPrioridades esteira){
         String string =
                 "\n##### RELATÓRIO #####\n" +
                         "Total de pedidos: " + pedidos.length + "\n" +
