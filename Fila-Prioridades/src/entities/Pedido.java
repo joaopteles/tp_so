@@ -24,6 +24,10 @@ public class Pedido implements Comparable{
         return prazo;
     }
 
+    public void setPrazo(int prazo) {
+        this.prazo = prazo;
+    }
+
     @Override
     public String toString() {
         return cliente + " " +
@@ -32,10 +36,12 @@ public class Pedido implements Comparable{
     }
 
     @Override
-    public int compareTo(Pedido o) {
-        if(this.prazo > o.getPrazo()) {
+    public int compareTo(Object o) {
+        Pedido outro = (Pedido)o;
+
+        if(this.prazo > outro.getPrazo()) {
             return -1;
-        } else if(this.prazo < o.getPrazo()) {
+        } else if(this.prazo < outro.getPrazo()) {
             return 1;
         }
         return 0;

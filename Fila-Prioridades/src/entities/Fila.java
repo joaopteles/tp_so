@@ -1,9 +1,11 @@
-public public class Fila<T>{
+package entities;
+
+public class Fila<T>{
     protected Pedido[] pedidos; 
 	protected int tamanho;
 
-	public Fila(int capacidade) {
-		super(capacidade);
+	public Fila(int tamanho) {
+		this.tamanho = tamanho;
 	}
 
 	public Fila() {

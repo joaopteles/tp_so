@@ -1,8 +1,8 @@
 package application;
 
-import Esteira;
-import Pedido;
-import ArquivoLeitura;
+import entities.Esteira;
+import entities.Pedido;
+import services.ArquivoLeitura;
 
 public class App {
     //#region CONSTANTE

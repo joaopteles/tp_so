@@ -1,3 +1,5 @@
+package entities;
+
 public class FilaPrioridade<T> extends Fila<T>{
 
     public void enfileira(Pedido pedido) {
