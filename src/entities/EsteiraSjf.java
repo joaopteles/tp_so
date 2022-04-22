@@ -1,5 +1,6 @@
 package entities;
 
+import java.text.CompactNumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,11 +25,11 @@ public class EsteiraSjf extends EsteiraBase {
 		this.pacoteNumero = pacoteNumero;
 	}
 
-	public List<PacoteProduzido> getListaTempoProduzido() {
+	public List<Pedido> getListaTempoProduzido() {
 		return listaTempoProduzido;
 	}
 
-	public void setListaTempoProduzido(List<PacoteProduzido> listaTempoProduzido) {
+	public void setListaTempoProduzido(List<Pedido> listaTempoProduzido) {
 		this.listaTempoProduzido = listaTempoProduzido;
 	}
 
@@ -56,7 +57,7 @@ public class EsteiraSjf extends EsteiraBase {
     private double segundosDecorridos;
     private int pedidoNumero;
     private int pacoteNumero;
-    List<PacoteProduzido> listaTempoProduzido = new ArrayList<>();
+    List<Pedido> listaTempoProduzido = new ArrayList<>();
     //#endregion
 
 	public EsteiraSjf(Pedido[] pedidos) {
@@ -104,16 +105,35 @@ public class EsteiraSjf extends EsteiraBase {
 	@Override
 	public void ligarEsteira() {
 		List<Pedido> pedidos = getPedidos();
-		Collections.sort(pedidos);
+
+        Comparator<Pedido> compSjf = new Comparator<Pedido>() {
+
+            @Override
+            public int compare(Pedido o1, Pedido o2) {
+                return (o1.getNumProdutos() - o2.getNumProdutos());
+            }
+
+        };
+		Collections.sort(pedidos, compSjf);
         for (int i = 0; i < pedidos.size(); i++) {
             double volumePedido = pedidos.get(i).getNumProdutos() * 250;
             int quantidadePacotes = (int) Math.ceil(volumePedido / PACOTE_VOL_MAX);
+            int tempoGastoNoPedido = 0;
             pedidoNumero++;
             for(int y = 0; y < quantidadePacotes; y++){
+                double tempoGastoNoPacote = PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO;
+                tempoGastoNoPedido += tempoGastoNoPacote;
                 segundosDecorridos += (PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO);
-                PacoteProduzido pacoteProduzido = new PacoteProduzido(pacoteNumero, segundosDecorridos, pedidos.get(i).getCliente(),pedidoNumero, pedidos.get(i).getPrazo());
-                listaTempoProduzido.add(pacoteProduzido);
+                pacoteNumero++;
             }
+            // 17 h a esteira para de funcionar
+            if (segundosDecorridos + tempoGastoNoPedido >= TEMPO_FUNCIONAMENTO) {
+                break;
+            }
+            segundosDecorridos += tempoGastoNoPedido;
+            pedidoNumero++;
+            listaTempoProduzido.add(pedidos.get(i));
+            pedidos.get(i).setMomentoProduzidoSegundos(segundosDecorridos);
         }
 	}
 
@@ -148,7 +168,7 @@ public class EsteiraSjf extends EsteiraBase {
                         "Hora inicio: 08:00\nHora Fim: " + esteira.getTempoDecorrido() + "\n" +
                         "Tempo medio para empacotar cada pedido: " + ((int) esteira.getSegundosDecorridos() / pedidos.length) + " segundos \n" +
                         "Pedidos produzidos ate 12H: " + esteira.pedidosAtendidosAteHorario(12,00) + "\n" +
-                        "Nao houve priorizaco de pedidos\n";
+                        "Nao houve priorizacao de pedidos\n";
         return string;
     }
 
