@@ -158,17 +158,16 @@ public class EsteiraSjf extends EsteiraBase {
 		return (int) Math.ceil(segundosDecorridos);
 	}
 	
-
-    public String relatorio(Pedido[] pedidos, EsteiraSjf esteira){
+    @Override
+    public String relatorio(){
 
         String string =
-                "\n##### RELATORIO #####\n" +
-                        "Total de pedidos: " + pedidos.length + "\n" +
-                        "Tempo total: " + ((double) (esteira.getSegundosDecorridos() / 60)) + " minutos \n" +
-                        "Hora inicio: 08:00\nHora Fim: " + esteira.getTempoDecorrido() + "\n" +
-                        "Tempo medio para empacotar cada pedido: " + ((int) esteira.getSegundosDecorridos() / pedidos.length) + " segundos \n" +
-                        "Pedidos produzidos ate 12H: " + esteira.pedidosAtendidosAteHorario(12,00) + "\n" +
-                        "Nao houve priorizacao de pedidos\n";
+                "\n##### RELATORIO SJF #####\n" +
+                        "Total de pedidos: " + listaTempoProduzido.size() + "\n" +
+                        "Tempo total: " + ((double) (getSegundosDecorridos() / 60)) + " minutos \n" +
+                        "Hora inicio: 08:00\nHora Fim: " + getTempoDecorrido() + "\n" +
+                        "Tempo medio para empacotar cada pedido: " + ((int) getSegundosDecorridos() / listaTempoProduzido.size()) + " segundos \n" +
+                        "Pedidos produzidos ate 12H: " + pedidosAtendidosAteHorario(12,00) + "\n";
         return string;
     }
 

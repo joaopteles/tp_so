@@ -2,30 +2,14 @@ package entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-public class EsteiraPrioridades {
-
-    //#region CONSTANTES
-    public static final double PACOTE_VOL_MAX = 5000;
-    public static final double PACOTE_TEMPO_MEDIO = 5;
-    public static final double TEMPO_TRANSICAO = 0.5;
-    //#endregion
-
-    //#region ATRIBUTOS
-    private Pedido[] pedidos;
-    private int horaFinal;
-    private int minutoFinal;
-    private int segundoFinal;
-    private double segundosDecorridos;
-    private int pedidoNumero;
-    private int pacoteNumero;
-    List<PacoteProduzido> listaTempoProduzido = new ArrayList<>();
-    //#endregion
+public class EsteiraPrioridades extends EsteiraBase {
 
     //#region CONSTRUTOR
     public EsteiraPrioridades(Pedido[] pedidos){
-        this.pedidos = pedidos;
+        super(pedidos);
     }
     //#endregion
 
@@ -76,7 +60,8 @@ public class EsteiraPrioridades {
     //#endregion
 
     //#region MÉTODOS
-    private void atualizaTempoTotal() {
+    @Override
+    protected void atualizaTempoTotal() {
         int horaInicio = 8;
         //SegundoTotal > é a quantidade de segundos pedidosedondado para cima se houver fração
         int segundos = (int) Math.ceil(this.segundosDecorridos);
@@ -88,21 +73,51 @@ public class EsteiraPrioridades {
         this.horaFinal = horaInicio + horas;
     }
 
-    public void ligarEsteira(){
-        sortPedidosPrazo();
-        for (int i = 0; i < pedidos.length; i++) {
-            double volumePedido = pedidos[i].getNumProdutos() * 250;
+    @Override
+	public void ligarEsteira() {
+		List<Pedido> pedidos = getPedidos();
+
+        Comparator<Pedido> compPrazo = new Comparator<Pedido>() {
+
+            @Override
+            public int compare(Pedido o1, Pedido o2) {
+                // prazo zero : sem prazo
+                if (o1.getPrazo() == 0) {
+                    if (o2.getPrazo() == 0) {
+                        return 0;
+                    }
+                    return 1;
+                }
+                else if (o2.getPrazo() == 0) {
+                    return -1;
+                }
+                return (o1.getPrazo() - o2.getPrazo());
+            }
+
+        };
+		Collections.sort(pedidos, compPrazo);
+        for (int i = 0; i < pedidos.size(); i++) {
+            double volumePedido = pedidos.get(i).getNumProdutos() * 250;
             int quantidadePacotes = (int) Math.ceil(volumePedido / PACOTE_VOL_MAX);
+            int tempoGastoNoPedido = 0;
             pedidoNumero++;
             for(int y = 0; y < quantidadePacotes; y++){
                 double tempoGastoNoPacote = PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO;
-                segundosDecorridos += tempoGastoNoPacote;
+                tempoGastoNoPedido += tempoGastoNoPacote;
+                segundosDecorridos += (PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO);
                 pacoteNumero++;
-                PacoteProduzido pacoteProduzido = new PacoteProduzido(pacoteNumero, segundosDecorridos, pedidos[i].getCliente(),pedidoNumero, pedidos[i].getPrazo());
-                listaTempoProduzido.add(pacoteProduzido);
             }
+            // 17 h a esteira para de funcionar
+            if (segundosDecorridos + tempoGastoNoPedido >= TEMPO_FUNCIONAMENTO) {
+                break;
+            }
+            segundosDecorridos += tempoGastoNoPedido;
+            pedidoNumero++;
+            listaTempoProduzido.add(pedidos.get(i));
+            pedidos.get(i).setMomentoProduzidoSegundos(segundosDecorridos);
         }
-    }
+	}
+
 
     public int pedidosAtendidosAteHorario(int hora, int min){
         int total = 0;
@@ -119,18 +134,18 @@ public class EsteiraPrioridades {
         return total;
     }
 
-    private void sortPedidosPrazo(){
-        int quant = pedidos.length;
-        for (int i = 0; i < quant; i++) {
-            for (int j = 0; j < quant - i - 1; j++)
-            // prazo zero: sem prazo
-                if (pedidos[j].getPrazo() == 0 || 
-                (pedidos[j + 1].getPrazo() != 0 && pedidos[j].getPrazo() > pedidos[j + 1].getPrazo())) {
-                    Pedido temp = pedidos[j];
-                    pedidos[j] = pedidos[j + 1];
-                    pedidos[j + 1] = temp;
-                }
-        }
+    @Override
+    public String relatorio() {
+
+        String string = "\n##### RELATÓRIO PRIORIDADES #####\n" +
+                "Total de pedidos: " + listaTempoProduzido.size() + "\n" +
+                "Tempo total: " + ((double) (getSegundosDecorridos() / 60)) + " minutos \n" +
+                "Hora início: 08:00\nHora Fim: " + getTempoDecorrido() + "\n" +
+                "Tempo médio para empacotar cada pedido: " + ((int) getSegundosDecorridos() / listaTempoProduzido.size())
+                + " segundos \n" +
+                "Pedidos produzidos até 12H: " + pedidosAtendidosAteHorario(12, 00) + "\n";
+        return string;
     }
+
     //#endregion
 }

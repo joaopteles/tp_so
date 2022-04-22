@@ -71,4 +71,6 @@ public abstract class EsteiraBase {
     public abstract String getTempoDecorrido();
 
     public abstract int getSegundosDecorridos();
+
+    public abstract String relatorio();
 }
