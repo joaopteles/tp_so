@@ -106,15 +106,14 @@ public class EsteiraSjf extends EsteiraBase {
 	public void ligarEsteira() {
 		List<Pedido> pedidos = getPedidos();
 
-        Comparator<Pedido> compSjf = new Comparator<Pedido>() {
+		Collections.sort(pedidos, new Comparator<Pedido>() {
 
             @Override
             public int compare(Pedido o1, Pedido o2) {
                 return (o1.getNumProdutos() - o2.getNumProdutos());
             }
 
-        };
-		Collections.sort(pedidos, compSjf);
+        });
         for (int i = 0; i < pedidos.size(); i++) {
             double volumePedido = pedidos.get(i).getNumProdutos() * 250;
             int quantidadePacotes = (int) Math.ceil(volumePedido / PACOTE_VOL_MAX);

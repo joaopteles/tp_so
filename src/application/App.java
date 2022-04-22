@@ -8,7 +8,7 @@ import services.ArquivoLeitura;
 
 public class App {
     // #region CONSTANTE
-    private static final String NOME_ARQUIVO = "./arq-teste.txt";
+    private static final String NOME_ARQUIVO = "./arq-teste2.txt";
     // #endregion
 
     public static void main(String[] args) {
