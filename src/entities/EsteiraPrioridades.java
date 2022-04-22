@@ -77,7 +77,7 @@ public class EsteiraPrioridades extends EsteiraBase {
 	public void ligarEsteira() {
 		List<Pedido> pedidos = getPedidos();
 
-        Comparator<Pedido> compPrazo = new Comparator<Pedido>() {
+		Collections.sort(pedidos, new Comparator<Pedido>() {
 
             @Override
             public int compare(Pedido o1, Pedido o2) {
@@ -94,8 +94,7 @@ public class EsteiraPrioridades extends EsteiraBase {
                 return (o1.getPrazo() - o2.getPrazo());
             }
 
-        };
-		Collections.sort(pedidos, compPrazo);
+        });
         for (int i = 0; i < pedidos.size(); i++) {
             double volumePedido = pedidos.get(i).getNumProdutos() * 250;
             int quantidadePacotes = (int) Math.ceil(volumePedido / PACOTE_VOL_MAX);
