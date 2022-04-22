@@ -102,11 +102,11 @@ public class EsteiraFCFS extends EsteiraBase {
 
     public String relatorio() {
 
-        String string = "\n##### RELATÓRIO #####\n" +
-                "Total de pedidos: " + pedidos.length + "\n" +
+        String string = "\n##### RELATÓRIO FCFS #####\n" +
+                "Total de pedidos empacotados: " + listaTempoProduzido.size() + "\n" +
                 "Tempo total: " + ((double) (getSegundosDecorridos() / 60)) + " minutos \n" +
                 "Hora início: 08:00\nHora Fim: " + getTempoDecorrido() + "\n" +
-                "Tempo médio para empacotar cada pedido: " + ((int) getSegundosDecorridos() / pedidos.length)
+                "Tempo médio para empacotar cada pedido: " + ((int) getSegundosDecorridos() / listaTempoProduzido.size())
                 + " segundos \n" +
                 "Pedidos produzidos até 12H: " + pedidosAtendidosAteHorario(12, 00) + "\n" +
                 "Não houve priorização de pedidos\n";

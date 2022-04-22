@@ -7,27 +7,36 @@ import entities.Pedido;
 import services.ArquivoLeitura;
 
 public class App {
-    //#region CONSTANTE
-    private static final String NOME_ARQUIVO = "./arq-teste.txt";
-    //#endregion
+    // #region CONSTANTE
+    private static final String NOME_ARQUIVO = "./arq-teste2.txt";
+    // #endregion
 
     public static void main(String[] args) {
         Pedido[] pedidos = preencherPedidos();
 
         EsteiraFCFS esteiraFcfs = new EsteiraFCFS(pedidos);
         EsteiraSjf esteiraSrt = new EsteiraSjf(pedidos);
-        
-        esteiraSrt.ligarEsteira();
-        
-        esteiraFcfs.ligarEsteira();
+        EsteiraPrioridades esteiraPrioridades = new EsteiraPrioridades(pedidos);
 
-        System.out.println(esteiraFcfs.relatorio());
-        System.out.println(esteiraSrt.relatorio(pedidos, esteiraSrt));
+        esteiraSrt.ligarEsteira();
+        esteiraFcfs.ligarEsteira();
+        esteiraPrioridades.ligarEsteira();
+
+        try {
+
+            System.out.println(esteiraFcfs.relatorio());
+            Thread.sleep(2000);
+            System.out.println(esteiraSrt.relatorio());
+            Thread.sleep(2000);
+            System.out.println(esteiraPrioridades.relatorio());
+        } catch(InterruptedException ex) {
+        
+        }
 
     }
 
-    //#region MÉTODOS
-    private static Pedido [] preencherPedidos(){
+    // #region MÉTODOS
+    private static Pedido[] preencherPedidos() {
         ArquivoLeitura f = new ArquivoLeitura(NOME_ARQUIVO);
 
         String s = f.lerLinha();
@@ -46,5 +55,5 @@ public class App {
 
         return pedidos;
     }
-    //#region
+    // #region
 }
