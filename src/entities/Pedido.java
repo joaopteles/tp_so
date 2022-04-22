@@ -1,6 +1,6 @@
 package entities;
 
-public class Pedido {
+public class Pedido implements Comparable<Pedido>{
 
     private String cliente;
     private int numProdutos;
@@ -30,4 +30,9 @@ public class Pedido {
                 numProdutos + " "
                 + prazo;
     }
+
+	@Override
+	public int compareTo(Pedido o) {
+		return this.prazo - o.getPrazo();
+	}
 }

@@ -2,6 +2,7 @@ package application;
 
 import entities.EsteiraFCFS;
 import entities.EsteiraPrioridades;
+import entities.EsteiraSjf;
 import entities.Pedido;
 import services.ArquivoLeitura;
 
@@ -13,10 +14,15 @@ public class App {
     public static void main(String[] args) {
         Pedido[] pedidos = preencherPedidos();
 
-        EsteiraFCFS esteira = new EsteiraFCFS(pedidos);
-        esteira.ligarEsteira();
+        EsteiraFCFS esteiraFcfs = new EsteiraFCFS(pedidos);
+        EsteiraSjf esteiraSrt = new EsteiraSjf(pedidos);
+        
+        esteiraSrt.ligarEsteira();
+        
+        esteiraFcfs.ligarEsteira();
 
-        System.out.println(relatorio(pedidos, esteira));
+        System.out.println(relatorio(pedidos, esteiraFcfs));
+        System.out.println(esteiraSrt.relatorio(pedidos, esteiraSrt));
 
     }
 
@@ -56,8 +62,3 @@ public class App {
     }
     //#region
 }
-
-/*
- * Tempo médio gasto para empacotar cada pedido
- * maximizar a quantidade de pedidos produzidos até 12:00
- * */
