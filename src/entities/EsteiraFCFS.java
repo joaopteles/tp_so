@@ -72,6 +72,7 @@ public class EsteiraFCFS extends EsteiraBase {
             for (int y = 0; y < quantidadePacotes; y++) {
                 double tempoGastoNoPacote = PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO;
                 tempoGastoNoPedido += tempoGastoNoPacote;
+                segundosDecorridos += (PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO);
                 pacoteNumero++;
             }
             // 17 h a esteira para de funcionar
@@ -104,9 +105,9 @@ public class EsteiraFCFS extends EsteiraBase {
 
         String string = "\n##### RELATÓRIO FCFS #####\n" +
                 "Total de pedidos empacotados: " + listaTempoProduzido.size() + "\n" +
-                "Tempo total: " + ((double) (getSegundosDecorridos() / 60)) + " minutos \n" +
+                "Tempo total: " + ((double) (segundosDecorridos / 60)) + " minutos \n" +
                 "Hora início: 08:00\nHora Fim: " + getTempoDecorrido() + "\n" +
-                "Tempo médio para empacotar cada pedido: " + ((int) getSegundosDecorridos() / listaTempoProduzido.size())
+                "Tempo médio para empacotar cada pedido: " + ((int) segundosDecorridos / listaTempoProduzido.size())
                 + " segundos \n" +
                 "Pedidos produzidos até 12H: " + pedidosAtendidosAteHorario(12, 00) + "\n" +
                 "Não houve priorização de pedidos\n";
