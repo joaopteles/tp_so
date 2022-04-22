@@ -4,32 +4,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class EsteiraFCFS {
+public class EsteiraFCFS extends EsteiraBase {
 
-    //#region CONSTANTES
-    public static final double PACOTE_VOL_MAX = 5000;
-    public static final double PACOTE_TEMPO_MEDIO = 5;
-    public static final double TEMPO_TRANSICAO = 0.5;
-    //#endregion
+    List<Pedido> listaTempoProduzido = new ArrayList<>();
 
-    //#region ATRIBUTOS
-    private Pedido[] pedidos;
-    private int horaFinal;
-    private int minutoFinal;
-    private int segundoFinal;
-    private double segundosDecorridos;
-    private int pedidoNumero;
-    private int pacoteNumero;
-    List<PacoteProduzido> listaTempoProduzido = new ArrayList<>();
-    //#endregion
-
-    //#region CONSTRUTOR
-    public EsteiraFCFS(Pedido[] pedidos){
-        this.pedidos = pedidos;
+    // #region CONSTRUTOR
+    public EsteiraFCFS(Pedido[] pedidos) {
+        super(pedidos);
     }
-    //#endregion
+    // #endregion
 
-    //#region GETTER e SETT
+    // #region GETTER e SETT
     public int getHoraFinal() {
         atualizaTempoTotal();
         return horaFinal;
@@ -45,22 +30,22 @@ public class EsteiraFCFS {
         return segundoFinal;
     }
 
-    public String getTempoDecorrido(){
+    public String getTempoDecorrido() {
         StringBuilder string = new StringBuilder();
 
-        if(getHoraFinal() < 10){
+        if (getHoraFinal() < 10) {
             string.append("0" + getHoraFinal());
         } else {
             string.append(getHoraFinal());
         }
 
-        if(getMinutoFinal() < 10){
+        if (getMinutoFinal() < 10) {
             string.append(":0" + minutoFinal);
         } else {
             string.append(":" + getMinutoFinal());
         }
 
-        if(getSegundoFinal() < 10){
+        if (getSegundoFinal() < 10) {
             string.append(":0" + getSegundoFinal());
         } else {
             string.append(":" + getSegundoFinal());
@@ -73,43 +58,40 @@ public class EsteiraFCFS {
         return (int) Math.ceil(segundosDecorridos);
     }
 
-    //#endregion
+    // #endregion
 
-    //#region MÉTODOS
-    private void atualizaTempoTotal() {
-        int horaInicio = 8;
-        //SegundoTotal > é a quantidade de segundos arredondado para cima se houver fração
-        int segundos = (int) Math.ceil(this.segundosDecorridos);
-        int minutos = segundos / 60;
-        int horas = segundos / 60 / 60;
-
-        this.segundoFinal = segundos % 60;
-        this.minutoFinal = minutos % 60;
-        this.horaFinal = horaInicio + horas;
-    }
-
-    public void ligarEsteira(){
+    // #region MÉTODOS
+    @Override
+    public void ligarEsteira() {
         for (int i = 0; i < pedidos.length; i++) {
+
             double volumePedido = pedidos[i].getNumProdutos() * 250;
             int quantidadePacotes = (int) Math.ceil(volumePedido / PACOTE_VOL_MAX);
-            pedidoNumero++;
-            for(int y = 0; y < quantidadePacotes; y++){
+            int tempoGastoNoPedido = 0;
+
+            for (int y = 0; y < quantidadePacotes; y++) {
                 double tempoGastoNoPacote = PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO;
-                segundosDecorridos += tempoGastoNoPacote;
+                tempoGastoNoPedido += tempoGastoNoPacote;
                 pacoteNumero++;
-                PacoteProduzido pacoteProduzido = new PacoteProduzido(pacoteNumero, segundosDecorridos, pedidos[i].getCliente(),pedidoNumero, pedidos[i].getPrazo());
-                listaTempoProduzido.add(pacoteProduzido);
             }
+            // 17 h a esteira para de funcionar
+            if (segundosDecorridos + tempoGastoNoPedido >= TEMPO_FUNCIONAMENTO) {
+                break;
+            }
+            segundosDecorridos += tempoGastoNoPedido;
+            pedidoNumero++;
+            listaTempoProduzido.add(pedidos[i]);
+            pedidos[i].setMomentoProduzidoSegundos(segundosDecorridos);
         }
     }
 
-    public int pedidosAtendidosAteHorario(int hora, int min){
+    @Override
+    public int pedidosAtendidosAteHorario(int hora, int min) {
         int total = 0;
         int tamanho = listaTempoProduzido.size();
         int segundos = (min * 60) + (((hora - 8) * 60) * 60);
-        Collections.sort(listaTempoProduzido);
         for (int i = 0; i < tamanho; i++) {
-            if(listaTempoProduzido.get(i).getMomentoProduzidoSegundos() < segundos) {
+            if (listaTempoProduzido.get(i).getMomentoProduzidoSegundos() < segundos) {
                 total++;
             } else {
                 tamanho = listaTempoProduzido.size();
@@ -117,5 +99,18 @@ public class EsteiraFCFS {
         }
         return total;
     }
-    //#endregion
+
+    public String relatorio() {
+
+        String string = "\n##### RELATÓRIO #####\n" +
+                "Total de pedidos: " + pedidos.length + "\n" +
+                "Tempo total: " + ((double) (getSegundosDecorridos() / 60)) + " minutos \n" +
+                "Hora início: 08:00\nHora Fim: " + getTempoDecorrido() + "\n" +
+                "Tempo médio para empacotar cada pedido: " + ((int) getSegundosDecorridos() / pedidos.length)
+                + " segundos \n" +
+                "Pedidos produzidos até 12H: " + pedidosAtendidosAteHorario(12, 00) + "\n" +
+                "Não houve priorização de pedidos\n";
+        return string;
+    }
+    // #endregion
 }

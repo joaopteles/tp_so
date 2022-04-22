@@ -21,7 +21,7 @@ public class App {
         
         esteiraFcfs.ligarEsteira();
 
-        System.out.println(relatorio(pedidos, esteiraFcfs));
+        System.out.println(esteiraFcfs.relatorio());
         System.out.println(esteiraSrt.relatorio(pedidos, esteiraSrt));
 
     }
@@ -45,20 +45,6 @@ public class App {
         f.fecharArq();
 
         return pedidos;
-    }
-
-
-    private static String relatorio(Pedido[] pedidos, EsteiraFCFS esteira){
-
-        String string =
-                "\n##### RELATÓRIO #####\n" +
-                        "Total de pedidos: " + pedidos.length + "\n" +
-                        "Tempo total: " + ((double) (esteira.getSegundosDecorridos() / 60)) + " minutos \n" +
-                        "Hora início: 08:00\nHora Fim: " + esteira.getTempoDecorrido() + "\n" +
-                        "Tempo médio para empacotar cada pedido: " + ((int) esteira.getSegundosDecorridos() / pedidos.length) + " segundos \n" +
-                        "Pedidos produzidos até 12H: " + esteira.pedidosAtendidosAteHorario(12,00) + "\n" +
-                        "Não houve priorização de pedidos\n";
-        return string;
     }
     //#region
 }

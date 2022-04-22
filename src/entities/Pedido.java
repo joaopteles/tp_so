@@ -5,6 +5,7 @@ public class Pedido implements Comparable<Pedido>{
     private String cliente;
     private int numProdutos;
     private int prazo;
+    private double momentoProduzidoSegundos;
 
     public Pedido(String cliente, int numProdutos, int prazo) {
         this.cliente = cliente;
@@ -35,4 +36,11 @@ public class Pedido implements Comparable<Pedido>{
 	public int compareTo(Pedido o) {
 		return this.prazo - o.getPrazo();
 	}
+
+    public double getMomentoProduzidoSegundos() {
+        return momentoProduzidoSegundos;
+    }
+    public void setMomentoProduzidoSegundos(double s) {
+        momentoProduzidoSegundos = s;
+    }
 }
