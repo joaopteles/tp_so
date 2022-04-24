@@ -3,6 +3,7 @@ package application;
 import entities.EsteiraFCFS;
 import entities.EsteiraPrioridades;
 import entities.EsteiraSjf;
+import entities.EsteiraRoundRobin;
 import entities.Pedido;
 import services.ArquivoLeitura;
 
@@ -17,10 +18,12 @@ public class App {
         EsteiraFCFS esteiraFcfs = new EsteiraFCFS(pedidos);
         EsteiraSjf esteiraSrt = new EsteiraSjf(pedidos);
         EsteiraPrioridades esteiraPrioridades = new EsteiraPrioridades(pedidos);
+        EsteiraRoundRobin esteiraRoundRobin = new EsteiraRoundRobin(pedidos);
 
         esteiraSrt.ligarEsteira();
         esteiraFcfs.ligarEsteira();
         esteiraPrioridades.ligarEsteira();
+        esteiraRoundRobin.ligarEsteira();
 
         try {
 
@@ -29,6 +32,8 @@ public class App {
             System.out.println(esteiraSrt.relatorio());
             Thread.sleep(2000);
             System.out.println(esteiraPrioridades.relatorio());
+            Thread.sleep(2000);
+            System.out.println(esteiraRoundRobin.relatorio());
         } catch(InterruptedException ex) {
         
         }
