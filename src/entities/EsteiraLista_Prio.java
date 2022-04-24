@@ -112,12 +112,10 @@ public class EsteiraLista_Prio extends EsteiraBase{
             int tempoGastoNoPedido = 0;
 
             this.pacoteNumero++;
-            for(int y = 0; y < quantidadePacotes; y++){
-                double tempoGastoNoPacote = realizaPacote(i, pedidos) + TEMPO_TRANSICAO;
-                tempoGastoNoPedido += tempoGastoNoPacote;
-                this.segundosDecorridos += (PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO);
-                this.pacoteNumero++;
-            }
+            double tempoGastoNoPacote = realizaPacote(i, pedidos) + TEMPO_TRANSICAO;
+            tempoGastoNoPedido += tempoGastoNoPacote;
+            this.segundosDecorridos += (PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO);
+            this.pacoteNumero++;
             
             // 17 h a esteira para de funcionar
             if (segundosDecorridos + tempoGastoNoPedido >= TEMPO_FUNCIONAMENTO) {
@@ -166,8 +164,9 @@ public class EsteiraLista_Prio extends EsteiraBase{
             tempoGasto += fracaoTempo;
             if (tempoGasto + this.segundosDecorridos < TEMPO_FUNCIONAMENTO) {
                 for(int i = 0; i < qntPrazoIgual; i++) {
-                    if(pedidos.get(i).getPrazo() - tempoGasto < 0) {
+                    if(pedidos.get(pos+i).getPrazo() - tempoGasto < 0) {
                         for(int j = 0; j < qntPrazoIgual; j++) {
+                            pedidos.get(pos+j).setPrazo(pedidos.get(pos+j).getPrazo() - tempoGasto);
                         }
                         done = true;
                     }
