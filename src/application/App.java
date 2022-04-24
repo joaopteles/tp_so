@@ -11,27 +11,11 @@ public class App {
 
     public static void main(String[] args) {
         Pedido[] pedidos = preencherPedidos();
-//
-        //EsteiraFCFS esteiraFcfs = new EsteiraFCFS(pedidos);
-        //EsteiraSjf esteiraSrt = new EsteiraSjf(pedidos);
-        //EsteiraPrioridades esteiraPrioridades = new EsteiraPrioridades(pedidos);
+
         EsteiraLista_Prio esteiraListaPrio = new EsteiraLista_Prio(pedidos);
 
-        //esteiraSrt.ligarEsteira();
-        //esteiraFcfs.ligarEsteira();
-        //esteiraPrioridades.ligarEsteira();
         esteiraListaPrio.ligarEsteira();
-//
-        //try {
-//
-        //    System.out.println(esteiraFcfs.relatorio());
-        //    Thread.sleep(2000);
-        //    System.out.println(esteiraSrt.relatorio());
-        //    Thread.sleep(2000);
-        //    System.out.println(esteiraPrioridades.relatorio());
-        //} catch(InterruptedException ex) {
-        //
-        //}
+
         System.out.println(esteiraListaPrio.relatorio());
 
     }
