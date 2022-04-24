@@ -17,6 +17,9 @@ public class Pedido implements Comparable<Pedido>{
     public int getNumProdutosPendentes() {
         return numProdutosPendentes;
     }
+    public void setNumProdutosPendentes(int numProdutosPendentes) {
+        this.numProdutosPendentes = numProdutosPendentes;
+    }
 
     public String getCliente() {
         return cliente;
