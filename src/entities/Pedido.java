@@ -4,6 +4,7 @@ public class Pedido implements Comparable<Pedido>{
 
     private String cliente;
     private int numProdutos;
+    private int numProdutosPendentes;
     private int prazo;
     private double momentoProduzidoSegundos;
 
@@ -11,6 +12,10 @@ public class Pedido implements Comparable<Pedido>{
         this.cliente = cliente;
         this.numProdutos = numProdutos;
         this.prazo = prazo;
+    }
+
+    public int getNumProdutosPendentes() {
+        return numProdutosPendentes;
     }
 
     public String getCliente() {
