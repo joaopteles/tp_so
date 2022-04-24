@@ -3,6 +3,7 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public abstract class EsteiraBase {
 
     // #region CONSTANTES
@@ -22,8 +23,6 @@ public abstract class EsteiraBase {
     protected int pacoteNumero;
     List<Pedido> listaTempoProduzido = new ArrayList<>();
     // #endregion
-
-    private List<Pedido> retorno;
 
     public EsteiraBase(Pedido[] pedidos) {
         this.setPedidos(pedidos);

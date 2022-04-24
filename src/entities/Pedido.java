@@ -1,10 +1,11 @@
 package entities;
 
-public class Pedido implements Comparable{
+public class Pedido implements Comparable<Pedido>{
 
     private String cliente;
     private int numProdutos;
     private int prazo;
+    private double momentoProduzidoSegundos;
 
     public Pedido(String cliente, int numProdutos, int prazo) {
         this.cliente = cliente;
@@ -36,14 +37,26 @@ public class Pedido implements Comparable{
     }
 
     @Override
-    public int compareTo(Object o) {
-        Pedido outro = (Pedido)o;
-
-        if(this.prazo > outro.getPrazo()) {
+	public int compareTo(Pedido o) {
+        if(this.prazo == 0) {
+            if(o.getPrazo() == 0) {
+                return 0;
+            }
+            return 1;
+        } else if(o.getPrazo() == 0) {
             return -1;
-        } else if(this.prazo < outro.getPrazo()) {
+        } else if(this.prazo < o.getPrazo()) {
+            return -1;
+        } else {
             return 1;
         }
-        return 0;
+	}
+
+    public double getMomentoProduzidoSegundos() {
+        return momentoProduzidoSegundos;
+    }
+
+    public void setMomentoProduzidoSegundos(double s) {
+        momentoProduzidoSegundos = s;
     }
 }

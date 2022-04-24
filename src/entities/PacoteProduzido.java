@@ -1,6 +1,6 @@
 package entities;
 
-public class PacoteProduzido implements Comparable <PacoteProduzido>{
+public class PacoteProduzido implements Comparable<PacoteProduzido>{
     private int pacoteNumero;
     private double momentoProduzidoSegundos;
     private String cliente;
