@@ -1,7 +1,5 @@
 package entities;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,7 +137,7 @@ public class EsteiraRoundRobin extends EsteiraBase{
                 for(int y = 0; y < pedidosLista.size(); y++){
                     if(pedidos[i].getCliente().compareTo(pedidosLista.get(y).getCliente()) == 0){
                         int numProdutos = pedidos[i].getNumProdutos() + pedidosLista.get(y).getNumProdutos();
-                        pedidosLista.get(y).setNumProdutos(numProdutos);
+                        pedidosLista.get(y).setNumProdutosPendentes(numProdutos);
                         igual = true;
                     }
                 }
@@ -165,7 +163,7 @@ public class EsteiraRoundRobin extends EsteiraBase{
         }
     }
 
-    public double menorQuantidadePacotes(@NotNull List<Pedido> pedidoList){
+    public double menorQuantidadePacotes(List<Pedido> pedidoList){
         int menorNumeroDeProdutosPendentes = 0;
 
         for(int i = 0; i < pedidoList.size(); i++){
