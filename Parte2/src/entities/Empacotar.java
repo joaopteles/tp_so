@@ -10,17 +10,14 @@ public class Empacotar {
     private static final String NOME_ARQUIVO = "./arq-teste.txt";
 
     List<Pedido> pedidos = new ArrayList<>();
+    List<PacoteProduzido> pacoteProduzidos = new ArrayList<>();
 
     public Empacotar() {
-        criarListaPedidos();
+        criarListaPedidosDoArquivo();
         mesclarPedidos();
     }
 
-    public List<Pedido> getPedidos() {
-        return pedidos;
-    }
-
-    private void criarListaPedidos() {
+    private void criarListaPedidosDoArquivo() {
         ArquivoLeitura al = new ArquivoLeitura(NOME_ARQUIVO);
 
         String s = al.lerLinha();
@@ -34,10 +31,23 @@ public class Empacotar {
         }
     }
 
+    //#region Getter e Setter
+
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public List<PacoteProduzido> getPacoteProduzidos() {
+        return pacoteProduzidos;
+    }
+
+
+    //#endregion
+
     /**
      * Mescla pedidos do mesmo cliente.
      * Condições para serem iguais:
-     *      Nome e Prazo
+     *      Nome, prazo e momento da chegada do pedido (momentoChegadaSegundos)
      * Comportamento:
      *      Percorre a lista de pedidos comparando se a posição atual
      *      é igual a alguma posição restante da lista.
@@ -47,9 +57,7 @@ public class Empacotar {
      */
     private void mesclarPedidos() {
         List<Pedido> listMesclada = new ArrayList<>();
-        /*
-        * O equals está utilizando a comparação por nome e prazo (ver equals em Pedido)
-        * */
+
         for (int i = 0; i < pedidos.size(); i++) {
             for (int j = i+1; j < pedidos.size(); j++) {
                 if(pedidos.get(i).equals(pedidos.get(j))) {
@@ -57,10 +65,6 @@ public class Empacotar {
                 }
             }
 
-            /*
-            * Não permite pedidos duplicados na lista nova
-            * É considerado que o equals utilize nome e prazo para comparação
-            * */
             if(!listMesclada.contains(pedidos.get(i))) {
                 listMesclada.add(pedidos.get(i));
             }
@@ -68,9 +72,22 @@ public class Empacotar {
 
         pedidos = listMesclada;
     }
+
+    public void ligarEsteiras() {
+        /*
+        * E AGORA JOSÉ?
+        * PAREI AQUI
+        *
+        * Obs:
+        * Dentro de ligar esteiras acredito que tenha que fazer uma lista com os pedidos pendentes para produção
+        * Porque eles somente entram na lista quando atingir o horário de entrada.
+        * Exemplo: horário: 08:00 entram todos pedidos do minuto 0
+        *                   08:05 entram todos os pedidos do minuto 5 e assim sucessivamente até 17 horas
+        * Sugiro em cada início de funcionamento de cada esteira, registrar a entrada na esteira e a finalização da esteira para ajustar o horário atual
+        * e atualizar a lista conforme o horário
+        *
+        * ou seja, as esteiras que serão o relógio
+        * */
+
+    }
 }
-
-/*
-* VAI TER QUE CRIAR UM "LIBERADOR DE PEDIDOS" POR SEGUNDO
-* */
-
