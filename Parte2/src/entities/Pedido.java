@@ -7,15 +7,15 @@ public class Pedido implements Comparable<Pedido>{
     private String cliente; //Informado No arquivo de entrada
     private int numProdutos; //Informado No arquivo de entrada
     private int numProdutosPendentes;
-    private int prazo; //Informado No arquivo de entrada
-    private int momentoChegadaSegundos; //Informado No arquivo de entrada (em min e passado para segundos)
+    private int prazoMinuto; //Informado No arquivo de entrada
+    private int momentoChegadaMinuto; //Informado No arquivo de entrada (em min e passado para segundos)
     private int momentoProduzidoSegundos;
 
-    public Pedido(String cliente, int numProdutos, int prazo, int momentoChegadaSegundos) {
+    public Pedido(String cliente, int numProdutos, int prazoMinuto, int momentoChegadaMinuto) {
         this.cliente = cliente;
         this.numProdutos = numProdutosPendentes = numProdutos;
-        this.prazo = prazo;
-        this.momentoChegadaSegundos = momentoChegadaSegundos;
+        this.prazoMinuto = prazoMinuto;
+        this.momentoChegadaMinuto = momentoChegadaMinuto;
     }
 
     public String getCliente() {
@@ -34,12 +34,12 @@ public class Pedido implements Comparable<Pedido>{
         this.numProdutosPendentes = numProdutosPendentes;
     }
 
-    public int getPrazo() {
-        return prazo;
+    public int getPrazoMinuto() {
+        return prazoMinuto;
     }
 
-    public int getMomentoChegadaSegundos() {
-        return momentoChegadaSegundos;
+    public int getMomentoChegadaMinuto() {
+        return momentoChegadaMinuto;
     }
 
     public int getMomentoProduzidoSegundos() {
@@ -50,13 +50,6 @@ public class Pedido implements Comparable<Pedido>{
         this.momentoProduzidoSegundos = momentoProduzidoSegundos;
     }
 
-    /**
-     * Soma produtos ao pedido atual
-     * Desde que os produtos pertençam ao mesmo cliente e tenham o mesmo prazo.
-     * @param cliente cliente
-     * @param numProdutos a ser somado
-     * @param prazo prazo
-     */
     public void adicionarProdutos(int quantidade) {
         this.numProdutos += quantidade;
     }
@@ -65,15 +58,15 @@ public class Pedido implements Comparable<Pedido>{
     public String toString() {
         return cliente + ";"
                 + numProdutos + ";"
-                + prazo + ";"
-                + momentoChegadaSegundos;
+                + prazoMinuto + ";"
+                + momentoChegadaMinuto;
     }
 
 	@Override
 	public int compareTo(Pedido o) {
-        if(this.prazo == o.getPrazo())
+        if(this.prazoMinuto == o.getPrazoMinuto())
             return 0;
-        return  (this.prazo < o.getPrazo()) ? -1:1;
+        return  (this.prazoMinuto < o.getPrazoMinuto()) ? -1:1;
 	}
 
     @Override
@@ -81,11 +74,11 @@ public class Pedido implements Comparable<Pedido>{
         if (this == o) return true;
         if (!(o instanceof Pedido)) return false;
         Pedido pedido = (Pedido) o;
-        return getPrazo() == pedido.getPrazo() && getCliente().equals(pedido.getCliente());
+        return getPrazoMinuto() == pedido.getPrazoMinuto() && getMomentoChegadaMinuto() == pedido.getMomentoChegadaMinuto() && getCliente().equals(pedido.getCliente());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCliente(), getPrazo());
+        return Objects.hash(getCliente(), getPrazoMinuto(), getMomentoChegadaMinuto());
     }
 }
