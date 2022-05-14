@@ -1,5 +1,7 @@
 package entities;
 
+import java.util.Objects;
+
 public class Pedido implements Comparable<Pedido>{
 
     private String cliente; //Informado No arquivo de entrada
@@ -55,11 +57,8 @@ public class Pedido implements Comparable<Pedido>{
      * @param numProdutos a ser somado
      * @param prazo prazo
      */
-    public void mesclarPedidoDoMesmoCliente(Pedido mesclarPedido) {
-
-        if(this.cliente == mesclarPedido.getCliente() && this.prazo == mesclarPedido.getPrazo()) {
-            this.numProdutos += mesclarPedido.getNumProdutos();
-        }
+    public void adicionarProdutos(int quantidade) {
+        this.numProdutos += quantidade;
     }
 
     @Override
@@ -77,4 +76,16 @@ public class Pedido implements Comparable<Pedido>{
         return  (this.prazo < o.getPrazo()) ? -1:1;
 	}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Pedido)) return false;
+        Pedido pedido = (Pedido) o;
+        return getPrazo() == pedido.getPrazo() && getCliente().equals(pedido.getCliente());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCliente(), getPrazo());
+    }
 }
