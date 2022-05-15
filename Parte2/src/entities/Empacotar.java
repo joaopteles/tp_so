@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 public class Empacotar {
 
@@ -13,6 +14,7 @@ public class Empacotar {
 
     List<Pedido> pedidos = new ArrayList<>();
     List<PacoteProduzido> pacoteProduzidos = new ArrayList<>();
+    Semaphore bloquearLista;   
 
     public Empacotar() {
         criarListaPedidosDoArquivo();
@@ -86,8 +88,10 @@ public class Empacotar {
     }
 
     public void ligarEsteiras() {
-        EsteiraSjf esteira = new EsteiraSjf(pedidos);
-        EsteiraSjf esteira2 = new EsteiraSjf(pedidos);
+        Semaphore bloquearLista = new Semaphore(1);
+        
+        EsteiraSjf esteira = new EsteiraSjf(pedidos, bloquearLista);
+        EsteiraSjf esteira2 = new EsteiraSjf(pedidos, bloquearLista);
 
         esteira.start();
         esteira2.start();

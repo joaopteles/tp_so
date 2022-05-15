@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import util.ListaSem;
 
@@ -61,12 +62,14 @@ public class EsteiraSjf extends Thread {
     protected int pacoteNumero;
     List<Pedido> listaTempoProduzido = new ArrayList<>();
     protected ListaSem<Pedido> listaPedidos;
+    protected Semaphore bloquearLista;
 
     // #endregion
 
-    public EsteiraSjf(List<Pedido> pedidos) {
+    public EsteiraSjf(List<Pedido> pedidos, Semaphore s) {
         listaPedidos = new ListaSem<>(pedidos);
         this.setPedidos(pedidos);
+        bloquearLista = s;
     }
 
     public void setPedidos(List<Pedido> pedidos) {
@@ -116,33 +119,41 @@ public class EsteiraSjf extends Thread {
         // pedido
         while (!pedidos.isEmpty()) {
 
-            Pedido pedido = encontrarMinimo((int) segundosDecorridos / 60);
+            try {
+                bloquearLista.acquire();
+                if (!pedidos.isEmpty()) {
 
-            double volumePedido = pedido.getNumProdutos() * VOL_PRODUTO;
-            int quantidadePacotes = (int) Math.ceil(volumePedido / PACOTE_VOL_MAX);
-            int quantEsteira = PACOTE_VOL_MAX / VOL_PRODUTO;
-            int tempoGastoNoPedido = 0;
+                    Pedido pedido = encontrarMinimo((int) segundosDecorridos / 60);
 
-            if (pedido.getNumProdutosPendentes() - quantEsteira <= 0) {
-                try {
-                    listaPedidos.remove(pedido);
-                } catch (InterruptedException e) {
-                    System.out.println(e);
+                    double volumePedido = pedido.getNumProdutosPendentes() * VOL_PRODUTO;
+                    int quantEsteira = PACOTE_VOL_MAX / VOL_PRODUTO;
+                    int tempoGastoNoPedido = 0;
+
+                    pedido.setNumProdutosPendentes(pedido.getNumProdutosPendentes() - quantEsteira);
+
+                    if (pedido.getNumProdutosPendentes() <= 0) {
+
+                        listaPedidos.remove(pedido);
+                        listaTempoProduzido.add(pedido);
+                        pedido.setMomentoProduzidoSegundos((int) segundosDecorridos);
+                        System.out.println("Removido: " + pedido.toString());
+                    }
+
+                    bloquearLista.release();
+
+                    double tempoGastoNoPacote = PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO;
+                    tempoGastoNoPedido += tempoGastoNoPacote;
+                    segundosDecorridos += (PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO);
+                    pacoteNumero++;
+
+                    // 17 h a esteira para de funcionar
+                    if (segundosDecorridos + tempoGastoNoPedido >= TEMPO_FUNCIONAMENTO) {
+                        break;
+                    }
                 }
-                listaTempoProduzido.add(pedido);
-                pedido.setMomentoProduzidoSegundos((int) segundosDecorridos);
-                System.out.println("Removido: " + pedido.toString());
-            }
-            
-            double tempoGastoNoPacote = PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO;
-            tempoGastoNoPedido += tempoGastoNoPacote;
-            segundosDecorridos += (PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO);
-            pacoteNumero++;
-            pedido.setNumProdutosPendentes(pedido.getNumProdutosPendentes() - quantEsteira);
-
-            // 17 h a esteira para de funcionar
-            if (segundosDecorridos + tempoGastoNoPedido >= TEMPO_FUNCIONAMENTO) {
-                break;
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
             }
         }
 
