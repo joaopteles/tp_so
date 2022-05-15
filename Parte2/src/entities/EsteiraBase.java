@@ -2,6 +2,7 @@ package entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 public abstract class EsteiraBase extends Thread {
 
@@ -22,10 +23,14 @@ public abstract class EsteiraBase extends Thread {
     protected int pedidoNumero;
     protected int pacoteNumero;
     List<Pedido> listaTempoProduzido = new ArrayList<>();
+    protected Semaphore bloquearLista;
+    protected int pedidosAtendidos;
     // #endregion
 
-    public EsteiraBase(List<Pedido> pedidos) {
+    public EsteiraBase(List<Pedido> pedidos, Semaphore s) {
         this.setPedidos(pedidos);
+        bloquearLista = s;
+        pedidosAtendidos = 0;
     }
 
     public EsteiraBase(Pedido[] p) {
@@ -76,4 +81,10 @@ public abstract class EsteiraBase extends Thread {
     public abstract int getSegundosDecorridos();
 
     public abstract String relatorio();
+
+    @Override
+    public void run() {
+        ligarEsteira();
+
+    }
 }

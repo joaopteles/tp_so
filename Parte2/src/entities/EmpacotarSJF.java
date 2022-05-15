@@ -3,12 +3,10 @@ package entities;
 import util.ArquivoLeitura;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-public class Empacotar {
+public class EmpacotarSJF {
 
     private static final String NOME_ARQUIVO = "./arq-teste.txt";
 
@@ -16,17 +14,8 @@ public class Empacotar {
     List<PacoteProduzido> pacoteProduzidos = new ArrayList<>();
     Semaphore bloquearLista;
 
-    public Empacotar() {
+    public EmpacotarSJF() {
         criarListaPedidosDoArquivo();
-
-        // Collections.sort(pedidos, new Comparator<Pedido>() {
-
-        //     @Override
-        //     public int compare(Pedido o1, Pedido o2) {
-        //         return (o1.getMomentoChegadaMinuto() - o2.getMomentoChegadaMinuto());
-        //     }
-
-        // });
 
         ligarEsteiras();
     }
@@ -43,6 +32,7 @@ public class Empacotar {
                     Integer.parseInt(dadosPedido[2]),
                     Integer.parseInt(dadosPedido[3])));
         }
+        al.fecharArq();
     }
 
     // #region Getter e Setter
@@ -56,36 +46,6 @@ public class Empacotar {
     }
 
     // #endregion
-
-    /**
-     * Mescla pedidos do mesmo cliente.
-     * Condições para serem iguais:
-     * Nome, prazo e momento da chegada do pedido (momentoChegadaSegundos)
-     * Comportamento:
-     * Percorre a lista de pedidos comparando se a posição atual
-     * é igual a alguma posição restante da lista.
-     * Se forem iguais é feito a soma da quantidade de produtos na primeira
-     * ocorrência de igualdade
-     * Após percorrer toda lista, essa ocorrência é passada para nova lista.
-     * A nova lista substitui a lista anterior.
-     */
-    private void mesclarPedidos() {
-        List<Pedido> listMesclada = new ArrayList<>();
-
-        for (int i = 0; i < pedidos.size(); i++) {
-            for (int j = i + 1; j < pedidos.size(); j++) {
-                if (pedidos.get(i).equals(pedidos.get(j))) {
-                    pedidos.get(i).adicionarProdutos(pedidos.get(j).getNumProdutos());
-                }
-            }
-
-            if (!listMesclada.contains(pedidos.get(i))) {
-                listMesclada.add(pedidos.get(i));
-            }
-        }
-
-        pedidos = listMesclada;
-    }
 
     public void ligarEsteiras() {
         Semaphore bloquearLista = new Semaphore(1);
@@ -122,16 +82,4 @@ public class Empacotar {
         System.out.println("Esteira 2\n" + esteira2.relatorio());
     }
 
-    public String relatorio(EsteiraSjf esteira) {
-
-        String string = "\n##### RELATORIO SJF #####\n" +
-                "Pedidos atendidos: " + esteira.getPedidosAtendidos() + "\n" +
-                "Tempo total: " + (esteira.getSegundosDecorridos()) + " segundos \n" +
-                "Hora inicio: 08:00\nHora Fim: " + esteira.getTempoDecorrido() + "\n" +
-                "Tempo medio para empacotar cada pedido: "
-                + ((int) esteira.getSegundosDecorridos() / esteira.getPedidosAtendidos())
-                + " segundos \n" +
-                "Pedidos produzidos ate 12H: " + esteira.pedidosAtendidosAteHorario(12, 00) + "\n";
-        return string;
-    }
 }
