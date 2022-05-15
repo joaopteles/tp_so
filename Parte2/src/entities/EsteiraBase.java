@@ -3,7 +3,7 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class EsteiraBase {
+public abstract class EsteiraBase extends Thread {
 
     // #region CONSTANTES
     protected static final int PACOTE_VOL_MAX = 5000;
@@ -24,20 +24,15 @@ public abstract class EsteiraBase {
     List<Pedido> listaTempoProduzido = new ArrayList<>();
     // #endregion
 
-    private List<Pedido> retorno;
-
     public EsteiraBase(List<Pedido> pedidos) {
         this.setPedidos(pedidos);
     }
 
     public EsteiraBase(Pedido[] p) {
-        
+
         for (Pedido pedido : p) {
-            try {
-                pedidos.add(pedido);
-            } catch (InterruptedException e) {
-                System.out.println(e);
-            }
+            pedidos.add(pedido);
+
         }
     }
 

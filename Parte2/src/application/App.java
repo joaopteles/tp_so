@@ -6,9 +6,5 @@ import entities.Pedido;
 public class App {
     public static void main(String[] args) {
         Empacotar e = new Empacotar();
-
-        // for (Pedido p: e.getPedidos()) {
-        //     System.out.println(p.toString());
-        // }
     }
 }

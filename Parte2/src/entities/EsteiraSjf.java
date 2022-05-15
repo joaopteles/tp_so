@@ -60,12 +60,18 @@ public class EsteiraSjf extends Thread {
     protected int pacoteNumero;
     List<Pedido> listaTempoProduzido = new ArrayList<>();
     protected Semaphore bloquearLista;
+    protected int pedidosAtendidos;
 
     // #endregion
 
     public EsteiraSjf(List<Pedido> pedidos, Semaphore s) {
         this.setPedidos(pedidos);
         bloquearLista = s;
+        pedidosAtendidos = 0;
+    }
+
+    public int getPedidosAtendidos() {
+        return pedidosAtendidos;
     }
 
     public void setPedidos(List<Pedido> pedidos) {
@@ -115,40 +121,37 @@ public class EsteiraSjf extends Thread {
         // pedido
         while (!pedidos.isEmpty()) {
 
+            int quantEsteira = PACOTE_VOL_MAX / VOL_PRODUTO;
+            int tempoGastoNoPedido = 0;
+
             try {
                 bloquearLista.acquire();
                 if (!pedidos.isEmpty()) {
 
                     Pedido pedido = encontrarMinimo((int) segundosDecorridos / 60);
-
-                    double volumePedido = pedido.getNumProdutosPendentes() * VOL_PRODUTO;
-                    int quantEsteira = PACOTE_VOL_MAX / VOL_PRODUTO;
-                    int tempoGastoNoPedido = 0;
-
                     pedido.setNumProdutosPendentes(pedido.getNumProdutosPendentes() - quantEsteira);
 
                     if (pedido.getNumProdutosPendentes() <= 0) {
-
+                        pedidosAtendidos++;
                         pedidos.remove(pedido);
                         listaTempoProduzido.add(pedido);
                         pedido.setMomentoProduzidoSegundos((int) segundosDecorridos);
-                        System.out.println("Removido: " + pedido.toString());
+                        System.out.println(this.toString() + pedido.toString());
                     }
-
-                    bloquearLista.release();
 
                     double tempoGastoNoPacote = PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO;
                     tempoGastoNoPedido += tempoGastoNoPacote;
                     segundosDecorridos += (PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO);
                     pacoteNumero++;
 
-                    // 17 h a esteira para de funcionar
-                    if (segundosDecorridos + tempoGastoNoPedido >= TEMPO_FUNCIONAMENTO) {
-                        break;
-                    }
                 }
+                bloquearLista.release();
+                // 17 h a esteira para de funcionar
+                if (segundosDecorridos + tempoGastoNoPedido >= TEMPO_FUNCIONAMENTO) {
+                    break;
+                }
+
             } catch (InterruptedException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
@@ -176,8 +179,8 @@ public class EsteiraSjf extends Thread {
 
     public String relatorio() {
 
-        String string = "\n##### RELATORIO SJF #####\n" +
-                "Total de pedidos: " + listaTempoProduzido.size() + "\n" +
+        String string = "##### RELATORIO SJF #####\n" +
+                "Pedidos atendidos: " + pedidosAtendidos + "\n" +
                 "Tempo total: " + (getSegundosDecorridos()) + " segundos \n" +
                 "Hora inicio: 08:00\nHora Fim: " + getTempoDecorrido() + "\n" +
                 "Pedidos produzidos ate 12H: " + pedidosAtendidosAteHorario(12, 00) + "\n";
@@ -211,6 +214,19 @@ public class EsteiraSjf extends Thread {
     public void run() {
         ligarEsteira();
 
+    }
+
+    public String relatorio(Pedido[] pedidos) {
+
+        String string = "\n##### RELATORIO #####\n" +
+                "Total de pedidos: " + pedidos.length + "\n" +
+                "Tempo total: " + ((double) (getSegundosDecorridos() / 60)) + " minutos \n" +
+                "Hora inicio: 08:00\nHora Fim: " + getTempoDecorrido() + "\n" +
+                "Tempo medio para empacotar cada pedido: " + ((int) getSegundosDecorridos() / pedidos.length)
+                + " segundos \n" +
+                "Pedidos produzidos ate 12H: " + pedidosAtendidosAteHorario(12, 00) + "\n" +
+                "Nao houve priorizaco de pedidos\n";
+        return string;
     }
 
 }
