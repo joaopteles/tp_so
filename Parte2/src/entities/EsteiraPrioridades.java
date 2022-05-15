@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-public class EsteiraSjf extends Thread {
+public class EsteiraPrioridades extends Thread {
 
     // #region CONSTANTES
     protected static final int PACOTE_VOL_MAX = 5000;
@@ -48,10 +48,6 @@ public class EsteiraSjf extends Thread {
         this.segundosDecorridos = segundosDecorridos;
     }
 
-    public int getSegundosDecorridos() {
-        return (int) Math.ceil(segundosDecorridos);
-    }
-
     public int getPedidosAtendidos() {
         return pedidosAtendidos;
     }
@@ -70,15 +66,15 @@ public class EsteiraSjf extends Thread {
     protected int pedidosAtendidos;
     // #endregion
 
-    public EsteiraSjf(List<Pedido> pedidos, Semaphore s) {
-        this.setPedidos(pedidos);
+    // #region CONSTRUTOR
+    public EsteiraPrioridades(List<Pedido> pedidos, Semaphore s) {
+        this.pedidos = pedidos;
         bloquearLista = s;
         pedidosAtendidos = 0;
     }
+    // #endregion
 
-    public void setPedidos(List<Pedido> pedidos) {
-        this.pedidos = pedidos;
-    }
+    // #region MÉTODOS
 
     public String getTempoDecorrido() {
         StringBuilder string = new StringBuilder();
@@ -130,7 +126,7 @@ public class EsteiraSjf extends Thread {
                 bloquearLista.acquire();
                 if (!pedidos.isEmpty()) {
 
-                    Pedido pedido =  encontrarMinimo((int) segundosDecorridos);
+                    Pedido pedido = encontrarMenorPrazo((int) segundosDecorridos / 60);
                     pedido.setNumProdutosPendentes(pedido.getNumProdutosPendentes() - quantEsteira);
 
                     if (pedido.getNumProdutosPendentes() <= 0) {
@@ -173,9 +169,13 @@ public class EsteiraSjf extends Thread {
         return total;
     }
 
+    public int getSegundosDecorridos() {
+        return (int) Math.ceil(segundosDecorridos);
+    }
+
     public String relatorio() {
 
-        String string = "##### RELATORIO SJF #####\n" +
+        String string = "##### RELATORIO Prioridades #####\n" +
                 "Pedidos atendidos: " + pedidosAtendidos + "\n" +
                 "Tempo total: " + (getSegundosDecorridos()) + " segundos \n" +
                 "Hora inicio: 08:00\nHora Fim: " + getTempoDecorrido() + "\n" +
@@ -193,12 +193,12 @@ public class EsteiraSjf extends Thread {
      * @param tempo
      * @return
      */
-    public Pedido encontrarMinimo(int tempo) {
+    public Pedido encontrarMenorPrazo(int tempo) {
         Pedido menor = pedidos.get(0);
         for (Pedido pedido : pedidos) {
 
             if (pedido.getMomentoChegadaMinuto() <= tempo
-                    && pedido.getNumProdutosPendentes() < menor.getNumProdutosPendentes()) {
+                    && pedido.getPrazoMinuto() < menor.getPrazoMinuto()) {
                 menor = pedido;
             }
 
@@ -211,4 +211,5 @@ public class EsteiraSjf extends Thread {
         ligarEsteira();
 
     }
+
 }

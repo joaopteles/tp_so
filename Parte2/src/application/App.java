@@ -1,14 +1,13 @@
 package application;
 
-import entities.Empacotar;
-import entities.Pedido;
+import entities.EmpacotarSJF;
+import entities.EmpacotarFCFS;
+import entities.EmpacotarPrioridades;
 
 public class App {
     public static void main(String[] args) {
-        Empacotar e = new Empacotar();
-
-        // for (Pedido p: e.getPedidos()) {
-        //     System.out.println(p.toString());
-        // }
+        EmpacotarSJF sjf = new EmpacotarSJF();
+        EmpacotarFCFS fcfs = new EmpacotarFCFS();
+        EmpacotarPrioridades prioridades = new EmpacotarPrioridades();
     }
 }
