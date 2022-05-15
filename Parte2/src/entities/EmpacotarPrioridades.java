@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-public class EmpacotarFCFS {
+public class EmpacotarPrioridades {
 
     private static final String NOME_ARQUIVO = "./arq-teste.txt";
 
@@ -16,8 +16,9 @@ public class EmpacotarFCFS {
     List<PacoteProduzido> pacoteProduzidos = new ArrayList<>();
     Semaphore bloquearLista;
 
-    public EmpacotarFCFS() {
+    public EmpacotarPrioridades() {
         criarListaPedidosDoArquivo();
+
         ligarEsteiras();
     }
 
@@ -34,15 +35,6 @@ public class EmpacotarFCFS {
                     Integer.parseInt(dadosPedido[3])));
         }
         al.fecharArq();
-        Collections.sort(pedidos, new Comparator<Pedido>() {
-
-            @Override
-            public int compare(Pedido o1, Pedido o2) {
-                
-                return (o1.getMomentoChegadaMinuto() - o2.getMomentoChegadaMinuto());
-            }
-            
-        });
     }
 
     // #region Getter e Setter
@@ -60,8 +52,8 @@ public class EmpacotarFCFS {
     public void ligarEsteiras() {
         Semaphore bloquearLista = new Semaphore(1);
 
-        EsteiraFCFS esteira = new EsteiraFCFS(pedidos, bloquearLista);
-        EsteiraFCFS esteira2 = new EsteiraFCFS(pedidos, bloquearLista);
+        EsteiraPrioridades esteira = new EsteiraPrioridades(pedidos, bloquearLista);
+        EsteiraPrioridades esteira2 = new EsteiraPrioridades(pedidos, bloquearLista);
 
         esteira.start();
         esteira2.start();
@@ -71,7 +63,7 @@ public class EmpacotarFCFS {
         } catch (InterruptedException e) {
             System.out.println(e);
         }
-        
+
         int segundos;
         if (esteira.getSegundosDecorridos() > esteira.getSegundosDecorridos()) {
             segundos = esteira.getSegundosDecorridos();
@@ -79,7 +71,7 @@ public class EmpacotarFCFS {
             segundos = esteira2.getSegundosDecorridos();
         }
 
-        System.out.println("\n##### RELATORIO FCFS #####\n" +
+        System.out.println("\n##### RELATORIO Prioridades #####\n" +
         "Pedidos atendidos: " + (esteira.getPedidosAtendidos() + esteira2.getPedidosAtendidos()) +
                 "\nTempo total: " + segundos + " segundos\n" +
                 "Pedidos produzidos ate 12H: " + (esteira.pedidosAtendidosAteHorario(12, 00) +

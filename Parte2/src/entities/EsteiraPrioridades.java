@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-public class EsteiraFCFS extends Thread {
+public class EsteiraPrioridades extends Thread {
 
     // #region CONSTANTES
     protected static final int PACOTE_VOL_MAX = 5000;
@@ -67,7 +67,7 @@ public class EsteiraFCFS extends Thread {
     // #endregion
 
     // #region CONSTRUTOR
-    public EsteiraFCFS(List<Pedido> pedidos, Semaphore s) {
+    public EsteiraPrioridades(List<Pedido> pedidos, Semaphore s) {
         this.pedidos = pedidos;
         bloquearLista = s;
         pedidosAtendidos = 0;
@@ -126,7 +126,7 @@ public class EsteiraFCFS extends Thread {
                 bloquearLista.acquire();
                 if (!pedidos.isEmpty()) {
 
-                    Pedido pedido = pedidos.get(0);
+                    Pedido pedido = encontrarMenorPrazo((int) segundosDecorridos / 60);
                     pedido.setNumProdutosPendentes(pedido.getNumProdutosPendentes() - quantEsteira);
 
                     if (pedido.getNumProdutosPendentes() <= 0) {
@@ -175,7 +175,7 @@ public class EsteiraFCFS extends Thread {
 
     public String relatorio() {
 
-        String string = "##### RELATORIO FCFS #####\n" +
+        String string = "##### RELATORIO Prioridades #####\n" +
                 "Pedidos atendidos: " + pedidosAtendidos + "\n" +
                 "Tempo total: " + (getSegundosDecorridos()) + " segundos \n" +
                 "Hora inicio: 08:00\nHora Fim: " + getTempoDecorrido() + "\n" +
@@ -185,6 +185,25 @@ public class EsteiraFCFS extends Thread {
 
     public int quantidadePacotesPedido(Pedido p) {
         return p.getNumProdutos() * VOL_PRODUTO / PACOTE_VOL_MAX;
+    }
+
+    /**
+     * Encontra o menor pedido no tempo atual
+     * 
+     * @param tempo
+     * @return
+     */
+    public Pedido encontrarMenorPrazo(int tempo) {
+        Pedido menor = pedidos.get(0);
+        for (Pedido pedido : pedidos) {
+
+            if (pedido.getMomentoChegadaMinuto() <= tempo
+                    && pedido.getPrazoMinuto() < menor.getPrazoMinuto()) {
+                menor = pedido;
+            }
+
+        }
+        return menor;
     }
 
     @Override

@@ -71,7 +71,7 @@ public class EmpacotarSJF {
 
 
 
-        System.out.println("\n##### RELATORIO #####\n" +
+        System.out.println("\n##### RELATORIO SJF #####\n" +
         "Pedidos atendidos: " + (esteira.getPedidosAtendidos() + esteira2.getPedidosAtendidos()) +
                 "\nTempo total: " + segundos + " segundos\n" +
                 "Pedidos produzidos ate 12H: " + (esteira.pedidosAtendidosAteHorario(12, 00) +

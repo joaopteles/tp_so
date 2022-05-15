@@ -130,7 +130,7 @@ public class EsteiraSjf extends Thread {
                 bloquearLista.acquire();
                 if (!pedidos.isEmpty()) {
 
-                    Pedido pedido = encontrarMinimo((int) segundosDecorridos / 60);
+                    Pedido pedido =  encontrarMinimo((int) segundosDecorridos);
                     pedido.setNumProdutosPendentes(pedido.getNumProdutosPendentes() - quantEsteira);
 
                     if (pedido.getNumProdutosPendentes() <= 0) {
@@ -138,7 +138,6 @@ public class EsteiraSjf extends Thread {
                         pedidos.remove(pedido);
                         listaTempoProduzido.add(pedido);
                         pedido.setMomentoProduzidoSegundos((int) segundosDecorridos);
-                        System.out.println(this.toString() + pedido.toString());
                     }
 
                     double tempoGastoNoPacote = PACOTE_TEMPO_MEDIO + TEMPO_TRANSICAO;
@@ -157,7 +156,6 @@ public class EsteiraSjf extends Thread {
                 e1.printStackTrace();
             }
         }
-
     }
 
     public int pedidosAtendidosAteHorario(int hora, int min) {
