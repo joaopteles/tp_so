@@ -3,7 +3,10 @@ package entities;
 import util.ArquivoLeitura;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 public class Empacotar {
 
@@ -11,10 +14,21 @@ public class Empacotar {
 
     List<Pedido> pedidos = new ArrayList<>();
     List<PacoteProduzido> pacoteProduzidos = new ArrayList<>();
+    Semaphore bloquearLista;   
 
     public Empacotar() {
         criarListaPedidosDoArquivo();
-        mesclarPedidos();
+
+        Collections.sort(pedidos, new Comparator<Pedido>() {
+
+            @Override
+            public int compare(Pedido o1, Pedido o2) {
+                return (o1.getNumProdutos() - o2.getNumProdutos());
+            }
+
+        });
+
+        ligarEsteiras();
     }
 
     private void criarListaPedidosDoArquivo() {
@@ -74,20 +88,20 @@ public class Empacotar {
     }
 
     public void ligarEsteiras() {
-        /*
-        * E AGORA JOSÉ?
-        * PAREI AQUI
-        *
-        * Obs:
-        * Dentro de ligar esteiras acredito que tenha que fazer uma lista com os pedidos pendentes para produção
-        * Porque eles somente entram na lista quando atingir o horário de entrada.
-        * Exemplo: horário: 08:00 entram todos pedidos do minuto 0
-        *                   08:05 entram todos os pedidos do minuto 5 e assim sucessivamente até 17 horas
-        * Sugiro em cada início de funcionamento de cada esteira, registrar a entrada na esteira e a finalização da esteira para ajustar o horário atual
-        * e atualizar a lista conforme o horário
-        *
-        * ou seja, as esteiras que serão o relógio
-        * */
+        Semaphore bloquearLista = new Semaphore(1);
+        
+        EsteiraSjf esteira = new EsteiraSjf(pedidos, bloquearLista);
+        EsteiraSjf esteira2 = new EsteiraSjf(pedidos, bloquearLista);
 
+        esteira.start();
+        esteira2.start();
+        try {
+            esteira.join();
+            esteira2.join();
+        } catch (InterruptedException e) {
+            System.out.println(e);
+        }
+        System.out.println(esteira.relatorio());
+        System.out.println(esteira2.relatorio());
     }
 }
