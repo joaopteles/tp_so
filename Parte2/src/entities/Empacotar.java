@@ -14,7 +14,7 @@ public class Empacotar {
 
     public Empacotar() {
         criarListaPedidosDoArquivo();
-        mesclarPedidos();
+        ligarEsteiras();
     }
 
     private void criarListaPedidosDoArquivo() {
@@ -74,6 +74,10 @@ public class Empacotar {
     }
 
     public void ligarEsteiras() {
+        EsteiraSjf esteira = new EsteiraSjf(pedidos);
+
+        esteira.ligarEsteira();
+        System.out.println(esteira.relatorio());
         /*
         * E AGORA JOSÉ?
         * PAREI AQUI
