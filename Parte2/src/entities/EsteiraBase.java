@@ -3,8 +3,6 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.ListaSem;
-
 public abstract class EsteiraBase {
 
     // #region CONSTANTES
@@ -30,7 +28,6 @@ public abstract class EsteiraBase {
     private List<Pedido> retorno;
 
     public EsteiraBase(List<Pedido> pedidos) {
-        listaPedidos = new ListaSem<>(pedidos);
         this.setPedidos(pedidos);
     }
 
@@ -38,7 +35,7 @@ public abstract class EsteiraBase {
         
         for (Pedido pedido : p) {
             try {
-                listaPedidos.add(pedido);
+                pedidos.add(pedido);
             } catch (InterruptedException e) {
                 System.out.println(e);
             }

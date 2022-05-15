@@ -6,8 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import util.ListaSem;
-
 public class EsteiraSjf extends Thread {
 
     // #region CONSTANTES
@@ -61,13 +59,11 @@ public class EsteiraSjf extends Thread {
     protected int pedidoNumero;
     protected int pacoteNumero;
     List<Pedido> listaTempoProduzido = new ArrayList<>();
-    protected ListaSem<Pedido> listaPedidos;
     protected Semaphore bloquearLista;
 
     // #endregion
 
     public EsteiraSjf(List<Pedido> pedidos, Semaphore s) {
-        listaPedidos = new ListaSem<>(pedidos);
         this.setPedidos(pedidos);
         bloquearLista = s;
     }
@@ -133,7 +129,7 @@ public class EsteiraSjf extends Thread {
 
                     if (pedido.getNumProdutosPendentes() <= 0) {
 
-                        listaPedidos.remove(pedido);
+                        pedidos.remove(pedido);
                         listaTempoProduzido.add(pedido);
                         pedido.setMomentoProduzidoSegundos((int) segundosDecorridos);
                         System.out.println("Removido: " + pedido.toString());
