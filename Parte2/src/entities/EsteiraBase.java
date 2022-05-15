@@ -22,7 +22,6 @@ public abstract class EsteiraBase {
     protected int pedidoNumero;
     protected int pacoteNumero;
     List<Pedido> listaTempoProduzido = new ArrayList<>();
-    protected ListaSem<Pedido> listaPedidos;
     // #endregion
 
     private List<Pedido> retorno;
